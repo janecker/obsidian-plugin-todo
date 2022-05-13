@@ -67,6 +67,54 @@ export class SettingsTab extends PluginSettingTab {
         }),
       );
 
+    const globalFormatSetting = new Setting(containerEl);
+    globalFormatSetting
+      .setName('Global date tag format')
+      .setDesc(this.dateTagFormatDescription())
+      .addText((text) =>
+        text.setPlaceholder(currentSettings.globalDateTagFormat).onChange(async (globalDateTagFormat) => {
+          // TODO: refactor this
+          if (globalDateTagFormat.length === 0) {
+            globalDateTagFormat = DEFAULT_SETTINGS.globalDateTagFormat;
+          }
+
+          if (!this.validateDateTag(globalDateTagFormat)) {
+            globalFormatSetting.descEl.empty();
+            globalFormatSetting.setDesc(this.dateTagFormatDescription('Date tag must include %date% token.'));
+            return;
+          }
+
+          globalFormatSetting.descEl.empty();
+          globalFormatSetting.setDesc(this.dateTagFormatDescription());
+
+          this.plugin.updateSettings({ ...currentSettings, globalDateTagFormat });
+        }),
+      );
+
+    const globalDateFormatSetting = new Setting(containerEl);
+    globalDateFormatSetting
+      .setName('Date format (global tag)')
+      .setDesc(this.dateFormatDescription())
+      .addText((text) =>
+        text.setPlaceholder(currentSettings.globalDateFormat).onChange(async (globalDateFormat) => {
+          // TODO: refactor this
+          if (globalDateFormat.length === 0) {
+            globalDateFormat = DEFAULT_SETTINGS.dateFormat;
+          }
+
+          if (!this.validateDateFormat(globalDateFormat)) {
+            dateFormatSetting.descEl.empty();
+            dateFormatSetting.setDesc(this.dateTagFormatDescription('Invalid date format.'));
+            return;
+          }
+
+          dateFormatSetting.descEl.empty();
+          dateFormatSetting.setDesc(this.dateTagFormatDescription());
+
+          this.plugin.updateSettings({ ...currentSettings, globalDateFormat });
+        }),
+      );
+
     new Setting(containerEl)
       .setName('Open files in a new leaf')
       .setDesc(

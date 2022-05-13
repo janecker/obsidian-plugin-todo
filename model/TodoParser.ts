@@ -5,12 +5,17 @@ import { extractDueDateFromDailyNotesFile } from '../util/DailyNoteParser';
 
 export class TodoParser {
   private dateParser: DateParser;
+  private globalDateParser: DateParser;
+  private globalDuoDate: DateTime;
 
-  constructor(dateParser: DateParser) {
+  constructor(dateParser: DateParser, globalDateParser: DateParser) {
     this.dateParser = dateParser;
+    this.globalDateParser = globalDateParser;
   }
 
   async parseTasks(filePath: string, fileContents: string): Promise<TodoItem[]> {
+    this.globalDuoDate = this.globalDateParser.parseDate(fileContents);
+
     const pattern = /(-|\*) \[(\s|x)?\]\s(.*)/g;
     return [...fileContents.matchAll(pattern)].map((task) => this.parseTask(filePath, task));
   }
@@ -32,7 +37,7 @@ export class TodoParser {
       filePath,
       (entry.index ?? 0) + todoItemOffset,
       entry[0].length - todoItemOffset,
-      !isSomedayMaybeTask ? actionDate : undefined,
+      !isSomedayMaybeTask ? (actionDate ? actionDate : this.globalDuoDate) : undefined,
     );
   }
 

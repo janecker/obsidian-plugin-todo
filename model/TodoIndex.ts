@@ -88,7 +88,8 @@ export class TodoIndex {
   private async parseTodosInFile(file: TFile): Promise<TodoItem[]> {
     // TODO: Does it make sense to index completed TODOs at all?
     const dateParser = new DateParser(this.settings.dateTagFormat, this.settings.dateFormat);
-    const todoParser = new TodoParser(dateParser);
+    const globalDateParser = new DateParser(this.settings.globalDateTagFormat, this.settings.globalDateFormat);
+    const todoParser = new TodoParser(dateParser, globalDateParser);
     const fileContents = await this.vault.cachedRead(file);
     return todoParser
       .parseTasks(file.path, fileContents)

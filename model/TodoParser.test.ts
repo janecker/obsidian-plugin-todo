@@ -6,7 +6,8 @@ import { DateTime } from 'luxon';
 jest.mock('../util/DailyNoteParser');
 
 const dateParser = new DateParser(`#${DateParser.DateToken}`, 'yyyy-MM-dd');
-const todoParser = new TodoParser(dateParser);
+const globalDateParser = new DateParser(`#tbd-${DateParser.DateToken}`, 'kkkk-WW');
+const todoParser = new TodoParser(dateParser, globalDateParser);
 
 test('parsing an outstanding todo', async () => {
   const contents = `- [ ] This is something that needs doing`;
