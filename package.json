@@ -6,8 +6,8 @@
   "scripts": {
     "build": "rollup --config rollup.config.js",
     "dev": "rollup --config rollup.config.js -w",
-    "lint": "eslint '**/*.{js,ts}' --fix",
-    "lint-on-ci": "eslint '**/*.{js,ts}'",
+    "lint": "eslint **/*.{js,ts} --fix",
+    "lint-on-ci": "eslint **/*.{js,ts}",
     "test": "jest"
   },
   "keywords": [],
