@@ -89,7 +89,8 @@ export class TodoIndex {
     // TODO: Does it make sense to index completed TODOs at all?
     const dateParser = new DateParser(this.settings.dateTagFormat, this.settings.dateFormat);
     const globalDateParser = new DateParser(this.settings.globalDateTagFormat, this.settings.globalDateFormat);
-    const todoParser = new TodoParser(dateParser, globalDateParser);
+    const excludedFolders = this.settings.excludedFolders.split(',');
+    const todoParser = new TodoParser(dateParser, globalDateParser, excludedFolders);
     const fileContents = await this.vault.cachedRead(file);
     return todoParser
       .parseTasks(file.path, fileContents)

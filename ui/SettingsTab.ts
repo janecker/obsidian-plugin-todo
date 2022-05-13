@@ -115,6 +115,30 @@ export class SettingsTab extends PluginSettingTab {
         }),
       );
 
+    const excludedFoldersSetting = new Setting(containerEl);
+    excludedFoldersSetting
+      .setName('Excluded folders')
+      .setDesc(this.dateFormatDescription())
+      .addText((text) =>
+        text.setPlaceholder(currentSettings.excludedFolders).onChange(async (excludedFolders) => {
+          // TODO: refactor this
+          if (excludedFolders.length === 0) {
+            excludedFolders = DEFAULT_SETTINGS.dateFormat;
+          }
+
+          if (!this.validateExcludedFolders(excludedFolders)) {
+            excludedFoldersSetting.descEl.empty();
+            excludedFoldersSetting.setDesc(this.dateTagFormatDescription('TBD: Invalid date format.'));
+            return;
+          }
+
+          excludedFoldersSetting.descEl.empty();
+          excludedFoldersSetting.setDesc(this.dateTagFormatDescription());
+
+          this.plugin.updateSettings({ ...currentSettings, excludedFolders });
+        }),
+      );
+
     new Setting(containerEl)
       .setName('Open files in a new leaf')
       .setDesc(
@@ -175,5 +199,9 @@ export class SettingsTab extends PluginSettingTab {
     const formatted = expected.toFormat(dateFormat);
     const parsed = DateTime.fromFormat(formatted, dateFormat);
     return parsed.hasSame(expected, 'day') && parsed.hasSame(expected, 'month') && parsed.hasSame(expected, 'year');
+  }
+
+  private validateExcludedFolders(excludedFolders: string): boolean{
+    return true;
   }
 }

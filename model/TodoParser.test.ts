@@ -7,7 +7,8 @@ jest.mock('../util/DailyNoteParser');
 
 const dateParser = new DateParser(`#${DateParser.DateToken}`, 'yyyy-MM-dd');
 const globalDateParser = new DateParser(`#tbd-${DateParser.DateToken}`, 'kkkk-WW');
-const todoParser = new TodoParser(dateParser, globalDateParser);
+const excludedFolders : string[] = [];
+const todoParser = new TodoParser(dateParser, globalDateParser, excludedFolders);
 
 test('parsing an outstanding todo', async () => {
   const contents = `- [ ] This is something that needs doing`;

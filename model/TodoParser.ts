@@ -7,17 +7,27 @@ export class TodoParser {
   private dateParser: DateParser;
   private globalDateParser: DateParser;
   private globalDuoDate: DateTime;
+  private excludedFolders: string[];
 
-  constructor(dateParser: DateParser, globalDateParser: DateParser) {
+  constructor(dateParser: DateParser, globalDateParser: DateParser, excludedFolders: string[]) {
     this.dateParser = dateParser;
     this.globalDateParser = globalDateParser;
+    this.excludedFolders = excludedFolders;
   }
 
   async parseTasks(filePath: string, fileContents: string): Promise<TodoItem[]> {
     this.globalDuoDate = this.globalDateParser.parseDate(fileContents);
 
+    if (this.isExcludedFolder(filePath)) {
+      return [];
+    }
+
     const pattern = /(-|\*) \[(\s|x)?\]\s(.*)/g;
     return [...fileContents.matchAll(pattern)].map((task) => this.parseTask(filePath, task));
+  }
+
+  private isExcludedFolder(folder: string): boolean {
+    return this.excludedFolders.filter(excludedFolder => folder.startsWith(excludedFolder)).length > 0;
   }
 
   private parseTask(filePath: string, entry: RegExpMatchArray): TodoItem {
